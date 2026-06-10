@@ -30,8 +30,10 @@ body {
     radial-gradient(circle at 90% 18%, rgba(255, 79, 216, 0.16), transparent 24rem),
     linear-gradient(180deg, #07090f 0%, #10131a 45%, #080a10 100%);
   color: var(--text);
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, "Segoe UI", sans-serif;
   line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 body.menu-open {
@@ -142,6 +144,7 @@ a {
 .section {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
+  scroll-margin-top: 96px;
 }
 
 .hero {
@@ -151,7 +154,7 @@ a {
   align-items: center;
   overflow: hidden;
   width: 100%;
-  padding: 112px max(24px, calc((100vw - 1120px) / 2)) 44px;
+  padding: 150px max(24px, calc((100vw - 1120px) / 2)) 52px;
 }
 
 .hero-bg,
@@ -176,8 +179,8 @@ a {
 .hero-content {
   position: relative;
   z-index: 1;
-  width: min(720px, 100%);
-  padding-top: 24px;
+  width: min(680px, 100%);
+  padding-top: 0;
 }
 
 .eyebrow {
@@ -196,17 +199,17 @@ p {
 }
 
 h1 {
-  max-width: 760px;
+  max-width: 700px;
   margin-bottom: 20px;
-  font-size: clamp(2.8rem, 5.8vw, 5.2rem);
-  line-height: 0.98;
+  font-size: clamp(2.6rem, 5vw, 4.8rem);
+  line-height: 1;
   letter-spacing: 0;
 }
 
 h2 {
   margin-bottom: 0;
-  font-size: clamp(2rem, 4vw, 3.8rem);
-  line-height: 1;
+  font-size: clamp(1.9rem, 3.5vw, 3.3rem);
+  line-height: 1.04;
   letter-spacing: 0;
 }
 
@@ -448,7 +451,7 @@ h3 {
 
 .contact-panel {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1fr);
   align-items: stretch;
   gap: 32px;
   border-radius: 32px;
@@ -498,9 +501,9 @@ h3 {
 .contact-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  border-radius: 28px;
-  padding: 18px;
+  gap: 12px;
+  border-radius: 26px;
+  padding: 16px;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
     rgba(8, 12, 19, 0.72);
@@ -521,14 +524,15 @@ h3 {
 .contact-form select,
 .contact-form textarea {
   width: 100%;
-  min-height: 48px;
+  min-height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.08);
   color: var(--text);
   font: inherit;
+  font-size: 0.95rem;
   outline: none;
-  padding: 12px 14px;
+  padding: 10px 13px;
   transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
@@ -540,7 +544,7 @@ h3 {
 }
 
 .contact-form textarea {
-  min-height: 132px;
+  min-height: 112px;
   resize: vertical;
 }
 
@@ -550,8 +554,8 @@ h3 {
     linear-gradient(45deg, transparent 50%, var(--cyan) 50%),
     linear-gradient(135deg, var(--cyan) 50%, transparent 50%);
   background-position:
-    calc(100% - 20px) 21px,
-    calc(100% - 14px) 21px;
+    calc(100% - 19px) 19px,
+    calc(100% - 13px) 19px;
   background-repeat: no-repeat;
   background-size: 6px 6px;
   padding-right: 38px;
@@ -581,7 +585,7 @@ h3 {
 
 .checkbox-field {
   display: grid;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
   margin: 0;
   border: 0;
@@ -595,29 +599,54 @@ h3 {
   padding: 0;
 }
 
+.field-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .checkbox-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .checkbox-grid label {
-  display: inline-flex;
+  display: block;
+  min-width: 0;
   cursor: pointer;
 }
 
 .checkbox-grid span {
-  display: inline-flex;
-  min-height: 40px;
+  position: relative;
+  display: flex;
+  min-height: 38px;
   align-items: center;
+  width: 100%;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.08);
   color: #dbe4f7;
-  font-size: 0.88rem;
-  font-weight: 800;
-  padding: 0 14px;
+  font-size: 0.82rem;
+  font-weight: 750;
+  line-height: 1.15;
+  padding: 0 34px 0 12px;
   transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, color 180ms ease;
+}
+
+.checkbox-grid span::after {
+  position: absolute;
+  right: 11px;
+  display: grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  color: #061016;
+  content: "";
+  font-size: 0.7rem;
+  font-weight: 900;
 }
 
 .checkbox-grid input:checked + span {
@@ -625,6 +654,12 @@ h3 {
   background: linear-gradient(135deg, rgba(73, 242, 255, 0.22), rgba(118, 255, 199, 0.18));
   box-shadow: 0 0 0 4px rgba(73, 242, 255, 0.1);
   color: var(--text);
+}
+
+.checkbox-grid input:checked + span::after {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--cyan), var(--mint));
+  content: "✓";
 }
 
 .checkbox-grid input:focus-visible + span {
@@ -645,6 +680,7 @@ h3 {
 
 @media (max-width: 820px) {
   .topbar {
+    position: absolute;
     top: 10px;
     width: calc(100% - 20px);
   }
@@ -679,7 +715,7 @@ h3 {
 
   .hero {
     min-height: 82vh;
-    padding-top: 104px;
+    padding-top: 116px;
     padding-bottom: 38px;
   }
 
@@ -712,7 +748,15 @@ h3 {
 
   .checkbox-grid span {
     min-height: 42px;
-    font-size: 0.84rem;
+    font-size: 0.76rem;
+    padding-right: 28px;
+    padding-left: 10px;
+  }
+
+  .checkbox-grid span::after {
+    right: 9px;
+    width: 15px;
+    height: 15px;
   }
 
   .section-heading.split,
