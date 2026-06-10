@@ -301,11 +301,25 @@
             </label>
             <label>
               <span>Usuarios esperados</span>
-              <input name="users" type="text" placeholder="Ej: equipo interno, clientes, administradores" />
+              <select name="users">
+                <option value="">Por definir</option>
+                <option>Solo administrador</option>
+                <option>Equipo interno</option>
+                <option>Clientes o usuarios finales</option>
+                <option>Administrador y clientes</option>
+                <option>Multiples roles o sucursales</option>
+              </select>
             </label>
             <label>
               <span>Plazo ideal</span>
-              <input name="timeline" type="text" placeholder="Ej: 2 semanas, este mes, flexible" />
+              <select name="timeline">
+                <option value="">Por definir</option>
+                <option>Lo antes posible</option>
+                <option>2 a 4 semanas</option>
+                <option>1 a 2 meses</option>
+                <option>3 meses o mas</option>
+                <option>Flexible, prefiero planificar bien</option>
+              </select>
             </label>
             <label>
               <span>Presupuesto estimado</span>
@@ -327,14 +341,21 @@
                 required
               ></textarea>
             </label>
-            <label class="full-field">
-              <span>Herramientas o integraciones</span>
-              <textarea
-                name="integrations"
-                rows="3"
-                placeholder="Ej: WhatsApp, pagos, Google Sheets, Firebase, API externa, correo, sistema existente"
-              ></textarea>
-            </label>
+            <fieldset class="full-field checkbox-field">
+              <legend>Herramientas o integraciones</legend>
+              <div class="checkbox-grid">
+                <label><input name="integrations" type="checkbox" value="WhatsApp" /><span>WhatsApp</span></label>
+                <label><input name="integrations" type="checkbox" value="Pagos en linea" /><span>Pagos en linea</span></label>
+                <label><input name="integrations" type="checkbox" value="Google Sheets" /><span>Google Sheets</span></label>
+                <label><input name="integrations" type="checkbox" value="Correo automatico" /><span>Correo automatico</span></label>
+                <label><input name="integrations" type="checkbox" value="Firebase" /><span>Firebase</span></label>
+                <label><input name="integrations" type="checkbox" value="Supabase" /><span>Supabase</span></label>
+                <label><input name="integrations" type="checkbox" value="API externa" /><span>API externa</span></label>
+                <label><input name="integrations" type="checkbox" value="Sistema existente" /><span>Sistema existente</span></label>
+                <label><input name="integrations" type="checkbox" value="Notificaciones" /><span>Notificaciones</span></label>
+                <label><input name="integrations" type="checkbox" value="Aun no lo se" /><span>Aun no lo se</span></label>
+              </div>
+            </fieldset>
             <button class="button primary full-field" type="submit">Enviar por WhatsApp</button>
           </form>
         </div>

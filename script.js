@@ -27,7 +27,12 @@ whatsappForm?.addEventListener("submit", (event) => {
   const timeline = String(formData.get("timeline") || "").trim() || "Por definir";
   const budget = String(formData.get("budget") || "").trim() || "Por definir";
   const message = String(formData.get("message") || "").trim();
-  const integrations = String(formData.get("integrations") || "").trim() || "Por definir";
+  const integrations =
+    formData
+      .getAll("integrations")
+      .map((value) => String(value).trim())
+      .filter(Boolean)
+      .join(", ") || "Por definir";
 
   const whatsappMessage = [
     "Hola Zata Lab, quiero aterrizar un proyecto de software.",

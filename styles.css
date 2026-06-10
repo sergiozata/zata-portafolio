@@ -532,6 +532,13 @@ h3 {
   transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
+.contact-form input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
 .contact-form textarea {
   min-height: 132px;
   resize: vertical;
@@ -570,6 +577,59 @@ h3 {
 
 .full-field {
   grid-column: 1 / -1;
+}
+
+.checkbox-field {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.checkbox-field legend {
+  color: #dbe4f7;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 0;
+}
+
+.checkbox-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkbox-grid label {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.checkbox-grid span {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #dbe4f7;
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 0 14px;
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, color 180ms ease;
+}
+
+.checkbox-grid input:checked + span {
+  border-color: rgba(73, 242, 255, 0.62);
+  background: linear-gradient(135deg, rgba(73, 242, 255, 0.22), rgba(118, 255, 199, 0.18));
+  box-shadow: 0 0 0 4px rgba(73, 242, 255, 0.1);
+  color: var(--text);
+}
+
+.checkbox-grid input:focus-visible + span {
+  border-color: rgba(73, 242, 255, 0.8);
+  box-shadow: 0 0 0 4px rgba(73, 242, 255, 0.16);
 }
 
 .footer {
@@ -648,6 +708,11 @@ h3 {
   .contact-form {
     grid-template-columns: 1fr;
     padding: 14px;
+  }
+
+  .checkbox-grid span {
+    min-height: 42px;
+    font-size: 0.84rem;
   }
 
   .section-heading.split,
