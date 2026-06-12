@@ -8,7 +8,7 @@ Portafolio profesional para mostrar proyectos de desarrollo de software, automat
 - Diseno responsive con estetica iOS/cyberpunk.
 - Seccion de proyectos destacados.
 - Formulario de contacto tipo mini-brief.
-- Envio del formulario por WhatsApp con mensaje precargado.
+- Registro interno de solicitudes en Firestore.
 
 ## Ejecutar localmente
 
@@ -22,13 +22,9 @@ Luego abrir:
 http://localhost:4173
 ```
 
-## Contacto por WhatsApp
-
-El formulario arma un mensaje con la informacion del cliente y abre WhatsApp usando el numero configurado en `script.js`.
-
 ## Firestore y modo administrador
 
-El formulario puede guardar solicitudes en Firestore antes de abrir WhatsApp.
+El formulario guarda solicitudes en Firestore para revisarlas desde el modo administrador.
 
 1. Crea un proyecto en Firebase.
 2. Activa Firestore.
@@ -43,5 +39,14 @@ solicitudes_portafolio
 ```
 
 Para abrir el panel administrador, presiona 5 veces el logo `Z`.
+
+Desde el panel se pueden revisar solicitudes y cambiar su estado:
+
+- `nuevo`
+- `aprobado`
+- `en_revision`
+- `rechazado`
+
+Tambien se pueden agregar notas internas para seguimiento.
 
 Importante: el acceso oculto y la clave en el frontend no reemplazan reglas de seguridad reales. Para produccion, protege Firestore con reglas y autenticacion.

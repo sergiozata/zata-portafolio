@@ -2,17 +2,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/fireba
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   getFirestore,
   limit,
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const menuButton = document.querySelector(".menu-button");
 const navLinks = document.querySelectorAll(".nav a");
-const whatsappForm = document.querySelector("#whatsapp-form");
+const contactForm = document.querySelector("#contact-form");
 const formStatus = document.querySelector("#form-status");
 const brandMark = document.querySelector(".brand-mark");
 const adminOverlay = document.querySelector("#admin-overlay");
@@ -23,7 +25,6 @@ const adminRefresh = document.querySelector("#admin-refresh");
 const adminList = document.querySelector("#admin-list");
 const adminCount = document.querySelector("#admin-count");
 const adminStatus = document.querySelector("#admin-status");
-const whatsappNumber = "56992232617";
 
 const firebaseConfig = window.ZATA_FIREBASE_CONFIG || {};
 const collectionName = window.ZATA_FIREBASE_COLLECTION || "solicitudes_portafolio";
@@ -41,7 +42,7 @@ const setStatus = (element, message, type = "") => {
 };
 
 const getLeadFromForm = () => {
-  const formData = new FormData(whatsappForm);
+  const formData = new FormData(contactForm);
   return {
     nombre: String(formData.get("name") || "").trim(),
     tipoProyecto: String(formData.get("projectType") || "").trim(),
@@ -59,28 +60,9 @@ const getLeadFromForm = () => {
   };
 };
 
-const buildWhatsappMessage = (lead) =>
-  [
-    "Hola Zata Lab, quiero aterrizar un proyecto de software.",
-    "",
-    `Nombre: ${lead.nombre}`,
-    `Tipo de proyecto: ${lead.tipoProyecto}`,
-    `Etapa de la idea: ${lead.etapaIdea}`,
-    `Objetivo principal: ${lead.objetivoPrincipal}`,
-    `Usuarios esperados: ${lead.usuariosEsperados}`,
-    `Plazo ideal: ${lead.plazoIdeal}`,
-    `Presupuesto estimado: ${lead.presupuestoEstimado}`,
-    "",
-    "Problema que quiero resolver:",
-    lead.problema,
-    "",
-    "Herramientas o integraciones:",
-    lead.integraciones.length ? lead.integraciones.join(", ") : "Por definir",
-  ].join("\n");
-
 const saveLead = async (lead) => {
   if (!db) {
-    return { saved: false, reason: "Firebase no esta configurado todavia." };
+    throw new Error("Firebase no esta configurado todavia.");
   }
 
   await addDoc(collection(db, collectionName), {
@@ -93,6 +75,14 @@ const saveLead = async (lead) => {
   });
 
   return { saved: true };
+};
+
+const updateLead = async (id, data) => {
+  if (!db) throw new Error("Firebase no esta configurado todavia.");
+  await updateDoc(doc(db, collectionName, id), {
+    ...data,
+    actualizadoEn: serverTimestamp(),
+  });
 };
 
 const formatDate = (value) => {
@@ -133,7 +123,10 @@ const renderLeads = (leads) => {
               <h3>${escapeHtml(lead.nombre || "Sin nombre")}</h3>
               <p>${escapeHtml(lead.tipoProyecto || "Proyecto sin clasificar")}</p>
             </div>
-            <time>${escapeHtml(formatDate(lead.creadoEn || lead.creadoEnLocal))}</time>
+            <div class="lead-side">
+              <span class="status-badge status-${escapeHtml(lead.estado || "nuevo")}">${escapeHtml(lead.estado || "nuevo")}</span>
+              <time>${escapeHtml(formatDate(lead.creadoEn || lead.creadoEnLocal))}</time>
+            </div>
           </header>
           <div class="lead-grid">
             <span><strong>Etapa:</strong> ${escapeHtml(lead.etapaIdea || "Por definir")}</span>
@@ -144,6 +137,17 @@ const renderLeads = (leads) => {
             <span><strong>Integraciones:</strong> ${escapeHtml((lead.integraciones || []).join(", ") || "Por definir")}</span>
           </div>
           <p><strong>Problema:</strong> ${escapeHtml(lead.problema || "Sin descripcion")}</p>
+          ${
+            lead.notaInterna
+              ? `<p><strong>Nota interna:</strong> ${escapeHtml(lead.notaInterna)}</p>`
+              : ""
+          }
+          <div class="lead-actions">
+            <button type="button" data-action="estado" data-id="${escapeHtml(lead.id)}" data-status="aprobado">Aprobar</button>
+            <button type="button" data-action="estado" data-id="${escapeHtml(lead.id)}" data-status="en_revision">Revisar</button>
+            <button type="button" data-action="estado" data-id="${escapeHtml(lead.id)}" data-status="rechazado">Rechazar</button>
+            <button type="button" data-action="nota" data-id="${escapeHtml(lead.id)}" data-note="${escapeHtml(lead.notaInterna || "")}">Editar nota</button>
+          </div>
         </article>
       `,
     )
@@ -193,30 +197,21 @@ navLinks.forEach((link) => {
   });
 });
 
-whatsappForm?.addEventListener("submit", async (event) => {
+contactForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const lead = getLeadFromForm();
-  const whatsappMessage = buildWhatsappMessage(lead);
-  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
-  setStatus(formStatus, "Preparando solicitud...");
+  setStatus(formStatus, "Guardando solicitud...");
 
   try {
-    const result = await saveLead(lead);
-    setStatus(
-      formStatus,
-      result.saved
-        ? "Solicitud guardada. Abriendo WhatsApp..."
-        : "WhatsApp se abrira, pero Firebase aun no esta configurado.",
-      result.saved ? "ok" : "warning",
-    );
+    await saveLead(lead);
+    contactForm.reset();
+    setStatus(formStatus, "Solicitud guardada. La revisaremos desde el panel interno.", "ok");
   } catch (error) {
     console.error("No se pudo guardar la solicitud en Firestore", error);
-    setStatus(formStatus, "No se pudo guardar en Firebase, pero WhatsApp se abrira igual.", "warning");
+    setStatus(formStatus, "No se pudo guardar. Revisa la configuracion de Firebase.", "error");
   }
-
-  window.open(url, "_blank", "noopener,noreferrer");
 });
 
 brandMark?.addEventListener("click", (event) => {
@@ -260,3 +255,31 @@ adminLogin?.addEventListener("submit", async (event) => {
 });
 
 adminRefresh?.addEventListener("click", loadLeads);
+
+adminList?.addEventListener("click", async (event) => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+
+  const id = button.dataset.id;
+  const action = button.dataset.action;
+  if (!id) return;
+
+  try {
+    if (action === "estado") {
+      await updateLead(id, { estado: button.dataset.status || "en_revision" });
+      setStatus(adminStatus, "Estado actualizado.", "ok");
+    }
+
+    if (action === "nota") {
+      const note = window.prompt("Nota interna para esta solicitud:", button.dataset.note || "");
+      if (note === null) return;
+      await updateLead(id, { notaInterna: note.trim() });
+      setStatus(adminStatus, "Nota interna actualizada.", "ok");
+    }
+
+    await loadLeads();
+  } catch (error) {
+    console.error("No se pudo actualizar la solicitud", error);
+    setStatus(adminStatus, "No se pudo actualizar la solicitud.", "error");
+  }
+});
